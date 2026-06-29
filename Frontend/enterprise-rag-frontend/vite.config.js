@@ -128,5 +128,14 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), mongodbAuthPlugin(mongoUri)],
+    server: {
+      proxy: {
+        '/api/backend': {
+          target: 'http://13.222.192.169:8000',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/backend/, ''),
+        }
+      }
+    }
   };
 });

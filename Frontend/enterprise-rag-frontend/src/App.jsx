@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const BACKEND_URL = "http://13.222.192.169:8000";
+const BACKEND_URL = "/api/backend";
 
 export default function App() {
   // Auth state
