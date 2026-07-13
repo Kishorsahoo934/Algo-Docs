@@ -1,4 +1,4 @@
-# 🚀 AlgoDocs: Enterprise Hybrid RAG & Cognitive Intelligence Workspace
+# 🚀 AlgoDocs:Enterprise Hybrid RAG & Cognitive Intelligence Workspace
 
 AlgoDocs is a high-performance, containerized **Hybrid Retrieval-Augmented Generation (RAG)** platform designed to ingest, index, and query dense and sparse information from enterprise PDF documents. The system integrates semantic vector space retrieval with traditional keyword-based relevance matching, and automatically falls back to an OCR pipeline for scanned or image-based PDFs.
 
