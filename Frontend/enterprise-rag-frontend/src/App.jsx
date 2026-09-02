@@ -29,6 +29,40 @@ export default function App() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Load chat history when currentUser changes or logged in status changes
+  useEffect(() => {
+    if (isLoggedIn && currentUser?.email) {
+      const savedHistory = localStorage.getItem(`chat_history_${currentUser.email}`);
+      if (savedHistory) {
+        try {
+          setMessages(JSON.parse(savedHistory));
+        } catch (err) {
+          console.error("Error parsing chat history:", err);
+        }
+      } else {
+        // Welcome message for first time or if cleared
+        const welcomeText = authMode === 'signup'
+          ? `Welcome, ${currentUser.name}! 👋 Your account has been registered in the MongoDB Atlas database. Upload a PDF document to build your knowledge base, and let's get started!`
+          : `Welcome back, ${currentUser.name}! 👋 Let's pick up where we left off. Upload a PDF document to begin querying.`;
+        setMessages([
+          {
+            sender: "ai",
+            text: welcomeText
+          }
+        ]);
+      }
+    } else {
+      setMessages([]);
+    }
+  }, [isLoggedIn, currentUser]);
+
+  // Save chat history whenever messages change
+  useEffect(() => {
+    if (isLoggedIn && currentUser?.email && messages.length > 0) {
+      localStorage.setItem(`chat_history_${currentUser.email}`, JSON.stringify(messages));
+    }
+  }, [messages, currentUser, isLoggedIn]);
+
   // Handle Auth submission
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
@@ -54,12 +88,6 @@ export default function App() {
         if (response.ok) {
           setCurrentUser({ name, email });
           setIsLoggedIn(true);
-          setMessages([
-            {
-              sender: "ai",
-              text: `Welcome, ${name}! 👋 Your account has been registered in the MongoDB Atlas database. Upload a PDF document to build your knowledge base, and let's get started!`
-            }
-          ]);
         } else {
           setAuthError(data.error || 'Signup failed.');
         }
@@ -82,12 +110,6 @@ export default function App() {
         if (response.ok) {
           setCurrentUser(data.user);
           setIsLoggedIn(true);
-          setMessages([
-            {
-              sender: "ai",
-              text: `Welcome back, ${data.user.name}! 👋 Let's pick up where we left off. Upload a PDF document to begin querying.`
-            }
-          ]);
         } else {
           setAuthError(data.error || 'Invalid credentials.');
         }
@@ -358,7 +380,7 @@ export default function App() {
                     👤 {currentUser?.name || 'Kishor'}
                   </div>
                   <button 
-                    onClick={() => { setIsLoggedIn(false); setFile(null); setMessages([]); }}
+                    onClick={() => { setIsLoggedIn(false); setFile(null); setMessages([]); setCurrentUser(null); }}
                     className="text-xs bg-white/5 hover:bg-rose-500/10 hover:text-rose-400 border border-white/5 hover:border-rose-500/20 px-3 py-1.5 rounded-full transition-all"
                   >
                     Logout
