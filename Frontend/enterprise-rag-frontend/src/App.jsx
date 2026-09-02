@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 const BACKEND_URL = "/api/backend";
 
@@ -547,12 +548,32 @@ export default function App() {
                           {msg.sender === 'user' ? 'U' : 'AI'}
                         </div>
                         {/* Bubble */}
-                        <div className={`px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
+                        <div className={`px-4 py-3 text-sm leading-relaxed ${
                           msg.sender === 'user' 
                             ? 'chat-bubble-user' 
                             : 'chat-bubble-ai shadow-md'
                         }`}>
-                          {msg.text}
+                          {msg.sender === 'user' ? (
+                            <span className="whitespace-pre-wrap">{msg.text}</span>
+                          ) : (
+                            <ReactMarkdown
+                              components={{
+                                p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                                strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
+                                em: ({ children }) => <em className="italic text-gray-300">{children}</em>,
+                                ul: ({ children }) => <ul className="list-disc list-inside space-y-1 my-2 pl-1">{children}</ul>,
+                                ol: ({ children }) => <ol className="list-decimal list-inside space-y-1 my-2 pl-1">{children}</ol>,
+                                li: ({ children }) => <li className="text-gray-200">{children}</li>,
+                                h1: ({ children }) => <h1 className="text-base font-bold text-white mb-2 mt-1">{children}</h1>,
+                                h2: ({ children }) => <h2 className="text-sm font-bold text-white mb-1 mt-1">{children}</h2>,
+                                h3: ({ children }) => <h3 className="text-sm font-semibold text-indigo-300 mb-1 mt-1">{children}</h3>,
+                                code: ({ children }) => <code className="bg-white/10 text-indigo-300 px-1 py-0.5 rounded text-xs font-mono">{children}</code>,
+                                blockquote: ({ children }) => <blockquote className="border-l-2 border-indigo-500 pl-3 my-2 text-gray-400 italic">{children}</blockquote>,
+                              }}
+                            >
+                              {msg.text}
+                            </ReactMarkdown>
+                          )}
                         </div>
                       </div>
                     ))
